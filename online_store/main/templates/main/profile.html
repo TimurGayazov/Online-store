@@ -1,0 +1,119 @@
+{% extends 'main/layout.html' %}
+
+{% block title %}
+Profile Page | {{user}}
+{% endblock %}
+
+{% block main_info_bl %}
+{% load static %}
+<div class="profile_block">
+
+    <div class="profile_card">
+        <h2 class="border-bottom text-center">Your profile</h2>
+        <div class="profile_card_items">
+            <img src="{% static 'main/img/user_icon.jpg' %}" width="200" height="200"
+                 style="border: 1px solid #292b2c; border-radius:10px; margin-top:10px; margin-bottom:10px;  box-shadow: 0 0 15px #0D0D0D ;"/>
+            <br>
+            <h3>Username: {{user}}</h3>
+            <h3>First name: {{user.first_name}}</h3>
+            <h3>Last name: {{user.last_name}}</h3>
+            <h3>Email: {{user.email}}</h3>
+            <h3>Role: {{user.user_role}}</h3>
+        </div>
+        <div class="text-center">
+            <a href="{% url 'update_user' user.id%}" style="text-decoration:none;" class="btn btn-outline-light"
+               title="Edit profile">
+                <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-pen"
+                     viewBox="0 0 16 16">
+                    <path d="m13.498.795.149-.149a1.207 1.207 0 1 1 1.707 1.708l-.149.148a1.5 1.5 0 0 1-.059 2.059L4.854 14.854a.5.5 0 0 1-.233.131l-4 1a.5.5 0 0 1-.606-.606l1-4a.5.5 0 0 1 .131-.232l9.642-9.642a.5.5 0 0 0-.642.056L6.854 4.854a.5.5 0 1 1-.708-.708L9.44.854A1.5 1.5 0 0 1 11.5.796a1.5 1.5 0 0 1 1.998-.001zm-.644.766a.5.5 0 0 0-.707 0L1.95 11.756l-.764 3.057 3.057-.764L14.44 3.854a.5.5 0 0 0 0-.708l-1.585-1.585z"/>
+                </svg>
+            </a>
+            <a href="{% url 'basket' %}" class="btn btn-outline-light" title="Basket">
+                <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-bag"
+                     viewBox="0 0 16 16">
+                    <path d="M8 1a2.5 2.5 0 0 1 2.5 2.5V4h-5v-.5A2.5 2.5 0 0 1 8 1zm3.5 3v-.5a3.5 3.5 0 1 0-7 0V4H1v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V4h-3.5zM2 5h12v9a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V5z"/>
+                </svg>
+            </a>
+            <a href="{% url 'logout' %}" class="btn btn-outline-light">
+                <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor"
+                     class="bi bi-box-arrow-right" viewBox="0 0 16 16">
+                    <path fill-rule="evenodd"
+                          d="M10 12.5a.5.5 0 0 1-.5.5h-8a.5.5 0 0 1-.5-.5v-9a.5.5 0 0 1 .5-.5h8a.5.5 0 0 1 .5.5v2a.5.5 0 0 0 1 0v-2A1.5 1.5 0 0 0 9.5 2h-8A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h8a1.5 1.5 0 0 0 1.5-1.5v-2a.5.5 0 0 0-1 0v2z"/>
+                    <path fill-rule="evenodd"
+                          d="M15.854 8.354a.5.5 0 0 0 0-.708l-3-3a.5.5 0 0 0-.708.708L14.293 7.5H5.5a.5.5 0 0 0 0 1h8.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3z"/>
+                </svg>
+                Log out
+            </a>
+        </div>
+
+    </div>
+
+    {% for chek in receipts %}
+    {% if chek.user_username == user.username %}
+    <div class="profile_card">
+        <h2 class="border-bottom text-center">Receipt № {{chek.id}}</h2>
+        <h3>Date: {{chek.date}}</h3>
+        {% for pr in chek.basket_products.all %}
+        <h3>Course name: {{ pr.product_name }}</h3>
+        <h3>Course description: {{ pr.description }}</h3>
+        <h3>Course price: {{ pr.price }}</h3>
+        <h3>Course link: <a href="{{pr.link}}" style="text-decoration:none">Click</a></h3>
+        <hr>
+        {% endfor %}
+
+        <h3>Total price: {{ chek.total_price }}</h3>
+
+    </div>
+    {% endif %}
+    {% endfor %}
+
+
+    {% if user.user_role == "Owner" %}
+    <div class="profile_card">
+        <h2 class="border-bottom text-center">Users</h2>
+        <table class="table table-hover table-dark">
+            <thead>
+            <tr>
+                <th scope="col">id</th>
+                <th scope="col">Username</th>
+                <th scope="col">FirstName</th>
+                <th scope="col">Lastname</th>
+                <th scope="col">Email</th>
+                <th scope="col">Role</th>
+                <th scope="col">Edit</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for u in users %}
+            <tr>
+                <th scope="row">{{u.id}}</th>
+                <td>{{u.username}}</td>
+                <td>{{u.first_name}}</td>
+                <td>{{u.last_name}}</td>
+                <td>{{u.email}}</td>
+                <td>{{u.user_role}}</td>
+                <td>
+                    <a href="{% url 'update_user' u.id%}" style="text-decoration:none;" class="btn btn-outline-light"
+                       title="Edit profile">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor"
+                             class="bi bi-pen"
+                             viewBox="0 0 16 16">
+                            <path d="m13.498.795.149-.149a1.207 1.207 0 1 1 1.707 1.708l-.149.148a1.5 1.5 0 0 1-.059 2.059L4.854 14.854a.5.5 0 0 1-.233.131l-4 1a.5.5 0 0 1-.606-.606l1-4a.5.5 0 0 1 .131-.232l9.642-9.642a.5.5 0 0 0-.642.056L6.854 4.854a.5.5 0 1 1-.708-.708L9.44.854A1.5 1.5 0 0 1 11.5.796a1.5 1.5 0 0 1 1.998-.001zm-.644.766a.5.5 0 0 0-.707 0L1.95 11.756l-.764 3.057 3.057-.764L14.44 3.854a.5.5 0 0 0 0-.708l-1.585-1.585z"/>
+                        </svg>
+                    </a>
+                </td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <br>
+    <br>
+    {% endif %}
+    <br>
+    <br>
+
+</div>
+
+
+{% endblock %}

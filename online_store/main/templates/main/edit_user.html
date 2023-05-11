@@ -1,0 +1,39 @@
+{% extends 'main/layout.html' %}
+
+{% block title %}
+Update user info Page
+{% endblock %}
+
+{% block main_info_bl %}
+<div class="add_receipt_block">
+    <h2 class="text-center border-bottom">Update user info</h2>
+    <form method="POST">
+        {% csrf_token %}
+        <div class="mb-3">
+            <label class="form-label">Username:</label>
+            {{ form.username }}
+        </div>
+        <div class="mb-3">
+            <label class="form-label">FistName:</label>
+            {{ form.first_name }}
+        </div>
+        <div class="mb-3">
+            <label class="form-label">LastName:</label>
+            {{ form.last_name }}
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Email:</label>
+            {{ form.email }}
+        </div>
+         {% if session_user.user_role == "Owner" %}
+        <div class="mb-3">
+            <label class="form-label">Role:</label>
+            {{ form.user_role }}
+        </div>
+        {% endif %}
+        <div class="text-center border-top">
+            <button type="submit" class="btn btn-outline-success mt-3">Update user</button>
+        </div>
+    </form>
+</div>
+{% endblock %}

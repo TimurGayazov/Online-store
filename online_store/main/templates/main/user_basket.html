@@ -1,0 +1,59 @@
+{% extends 'main/layout.html' %}
+
+{% block title %}
+Basket | {{user}}
+{% endblock %}
+
+{% block main_info_bl %}
+<div class="center_block ">
+    <h1 class="text-center">Your shopping cart</h1>
+    {% if basket == 'Your cart is empty' or not basket.products_id.all %}
+    <br>
+    <h2 class="text-center">Your cart is empty!</h2>
+    <h2 class="text-center"><a href="{% url 'products' %}" style="text-decoration:none">Go to Products</a></h2>
+    {% endif %}
+    <div class="row row-cols-1 row-cols-md-3 g-4">
+        {% for pr in basket.products_id.all %}
+        <div class="col">
+            <div class="users_shopping_cart">
+                <h2 class="border-bottom text-center">{{pr.product_name}}</h2>
+                <br>
+                <h4>Product price: {{pr.price}} $</h4>
+                <br>
+                {% if user.is_authenticated %}
+                <div class="text-center">
+                    <a href="{% url 'product_page' pr.id%}" class="btn btn-outline-light mb-3">
+                        More info
+                    </a>
+                    <a href="{% url 'remove_from_basket' pr.id%}" class="btn btn-outline-danger mb-3">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor"
+                             class="bi bi-bag-x" viewBox="0 0 16 16">
+                            <path fill-rule="evenodd"
+                                  d="M6.146 8.146a.5.5 0 0 1 .708 0L8 9.293l1.146-1.147a.5.5 0 1 1 .708.708L8.707 10l1.147 1.146a.5.5 0 0 1-.708.708L8 10.707l-1.146 1.147a.5.5 0 0 1-.708-.708L7.293 10 6.146 8.854a.5.5 0 0 1 0-.708z"/>
+                            <path d="M8 1a2.5 2.5 0 0 1 2.5 2.5V4h-5v-.5A2.5 2.5 0 0 1 8 1zm3.5 3v-.5a3.5 3.5 0 1 0-7 0V4H1v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V4h-3.5zM2 5h12v9a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V5z"/>
+                        </svg>
+                    </a>
+                </div>
+                {% endif %}
+            </div>
+
+        </div>
+        {% endfor %}
+    </div>
+
+    {% if basket.get_total_price != 0 %}
+    <div class="text-center">
+        <br>
+        <h3 class="text-center">Total price: {{ basket.get_total_price }} $</h3>
+        <a href="{% url 'create_receipt' %}" class="btn btn-outline-light" style="font-size:30px">
+            <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-wallet"
+                 viewBox="0 0 16 16">
+                <path d="M0 3a2 2 0 0 1 2-2h13.5a.5.5 0 0 1 0 1H15v2a1 1 0 0 1 1 1v8.5a1.5 1.5 0 0 1-1.5 1.5h-12A2.5 2.5 0 0 1 0 12.5V3zm1 1.732V12.5A1.5 1.5 0 0 0 2.5 14h12a.5.5 0 0 0 .5-.5V5H2a1.99 1.99 0 0 1-1-.268zM1 3a1 1 0 0 0 1 1h12V2H2a1 1 0 0 0-1 1z"/>
+            </svg>
+            Pay
+        </a>
+    </div>
+    {% endif %}
+</div>
+
+{% endblock %}
