@@ -1,12 +1,12 @@
 {% extends 'main/layout.html' %}
 
 {% block title %}
-Courses Page
+Products
 {% endblock %}
 
 {% block main_info_bl %}
 <div class="center_block ">
-    <h1 class="text-center">Courses catalog</h1>
+    <h1 class="text-center">Products catalog</h1>
     {% if user.user_role == 'Admin' or user.user_role == "Owner" %}
     <a href="{% url 'create_product' %}" style="color: white; margin-left:95%;">
         <svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" fill="currentColor" class="bi bi-plus-circle"
