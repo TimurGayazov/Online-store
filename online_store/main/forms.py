@@ -1,5 +1,5 @@
 from .models import *
-from django.forms import ModelForm, TextInput, DateTimeInput, EmailInput, PasswordInput, FileInput, FloatField, CharField
+from django.forms import ModelForm, TextInput, DateTimeInput, EmailInput, PasswordInput, FileInput, FloatField, CharField, ModelChoiceField
 from django import forms
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm
 from django.contrib.auth.forms import AuthenticationForm
@@ -52,30 +52,43 @@ class LoginForm(AuthenticationForm):
 
 
 class ProductForm(ModelForm):
+    product_name = forms.CharField(
+        widget=forms.TextInput(attrs={"class": "form-control", 'placeholder': 'Enter the product name'}))
+    product_image = forms.ImageField(widget=forms.ClearableFileInput(attrs={'class': 'input-group form-control-file', 'type': 'file'}))
+    product_category = forms.ModelChoiceField(queryset=Category.objects.all(), widget=forms.Select(
+        attrs={"class": "form-select", 'placeholder': 'Выберети категорию товара'}))
+    description = forms.CharField(
+            widget=forms.Textarea(attrs={"class": "form-control", 'placeholder': 'Enter the description', 'id': 'textareaform'}))
+    link = forms.CharField(
+        widget=forms.TextInput(attrs={"class": "form-control", 'placeholder': 'Enter the product link'}))
+    price = forms.CharField(
+        widget=forms.TextInput(attrs={"class": "form-control", 'placeholder': 'Enter the product price'}))
+
     class Meta:
         model = Product
-        fields = ['product_name', 'description', 'link', 'price']
+        fields = ['product_name', 'product_image', 'product_category', 'description', 'link', 'price']
+        enctype = "multipart/form-data"
 
-        widgets = {
-
-            'product_name': TextInput(attrs={
-                'class': 'form-control',
-                'placeholder': 'Enter the product name'
-
-            }),
-            'description': TextInput(attrs={
-                'class': 'form-control',
-                'placeholder': 'Enter the product name'
-
-            }),
-            'link': TextInput(attrs={
-                'class': 'form-control',
-                'placeholder': 'Enter the product name'
-
-            }),
-            'price': TextInput(attrs={
-                'class': 'form-control',
-                'placeholder': 'Enter the product price'
-
-            })
-        }
+        # widgets = {
+        #
+        #     'product_name': TextInput(attrs={
+        #         'class': 'form-control',
+        #         'placeholder': 'Enter the product name'
+        #
+        #     }),
+        #     'description': TextInput(attrs={
+        #         'class': 'form-control',
+        #         'placeholder': 'Enter the product description'
+        #
+        #     }),
+        #     'link': TextInput(attrs={
+        #         'class': 'form-control',
+        #         'placeholder': 'Enter the product link'
+        #
+        #     }),
+        #     'price': TextInput(attrs={
+        #         'class': 'form-control',
+        #         'placeholder': 'Enter the product price'
+        #
+        #     })
+        # }

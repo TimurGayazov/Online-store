@@ -8,8 +8,24 @@ class User(AbstractUser):
     user_role = models.CharField('Роль пользователя', max_length=200, default='User')
 
 
+class Category(models.Model):
+    category_name = models.CharField('Название категории', max_length=50)
+
+    def __str__(self):
+        return self.category_name
+
+    def get_absolute_url(self):
+        return ''
+
+    class Meta:
+        verbose_name = 'Category'
+        verbose_name_plural = 'Categories'
+
+
 class Product(models.Model):
     product_name = models.CharField('Полное название товара', max_length=200)
+    product_image = models.ImageField(upload_to='product_img/', null=True, blank=True)
+    product_category = models.ForeignKey(Category, on_delete=models.CASCADE, null=True)
     description = models.TextField('Описание товара', max_length=500)
     link = models.CharField('Ссылка на товар', max_length=200)
     price = models.FloatField('Цена', max_length=6)
@@ -43,9 +59,7 @@ class Basket(models.Model):
 class Receipt(models.Model):
     user_username = models.CharField('Ник пользователя', max_length=200)
     date = models.CharField('date', max_length=200)
-    # basket_products = models.CharField('Товары', max_length=200)
     basket_products = models.ManyToManyField(Product)
-    # date = models.DateTimeField('Дата')
     total_price = models.FloatField('Цена', max_length=6)
 
     def __str__(self):

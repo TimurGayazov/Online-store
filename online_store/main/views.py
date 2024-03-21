@@ -4,7 +4,7 @@ from django.contrib.auth import login, logout
 from .forms import RegisterForm, LoginForm, ProductForm, UpdateUserForm
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
-from .models import User, Basket, Role, Product, Receipt
+from .models import User, Basket, Role, Product, Receipt, Category
 from django.views.generic import UpdateView, DeleteView
 from django.urls import reverse_lazy
 from django.shortcuts import render, get_object_or_404
@@ -62,11 +62,25 @@ def user_logout(request):
 
 def products(request):
     all_products = Product.objects.all().order_by('price')
+    categories = Category.objects.all()
     if request.user.is_authenticated:
         basket = Basket.objects.get(basket_id=request.user)
-        context = {'all_products': all_products, 'basket': basket}
+        context = {'all_products': all_products, 'basket': basket, 'categories': categories}
     else:
-        context = {'all_products': all_products}
+        context = {'all_products': all_products, 'categories': categories}
+    return render(request, 'main/products.html', context)
+
+
+def filter_products(request, category):
+    categories = Category.objects.all()
+    all_products = Product.objects.filter(product_category__category_name=str(category)).order_by('price')
+
+    # all_products = Product.objects.all().order_by('price')
+    if request.user.is_authenticated:
+        basket = Basket.objects.get(basket_id=request.user)
+        context = {'all_products': all_products, 'basket': basket, 'categories': categories}
+    else:
+        context = {'all_products': all_products, 'categories': categories}
     return render(request, 'main/products.html', context)
 
 
@@ -83,7 +97,7 @@ def product_page(request, pk):
 def create_product(request):
     error = ''
     if request.method == 'POST':
-        form = ProductForm(request.POST)
+        form = ProductForm(request.POST, request.FILES)
         if form.is_valid():
             form.save()
             return redirect('products')
@@ -109,8 +123,8 @@ def delete_product(request, pk):
 
 class UpdateProduct(UpdateView):
     model = Product
+    form_class = ProductForm
     template_name = 'main/update_product.html'
-    fields = ['id', 'product_name', 'description', 'link', 'price']
     success_url = reverse_lazy("products")
 
 

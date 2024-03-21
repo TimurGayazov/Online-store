@@ -53,15 +53,41 @@ Profile | {{user}}
     <div class="profile_card">
         <h2 class="border-bottom text-center">Receipt № {{chek.id}}</h2>
         <h3>Date: {{chek.date}}</h3>
+        <hr>
         {% for pr in chek.basket_products.all %}
-        <h3>Course name: {{ pr.product_name }}</h3>
-        <h3>Course description: {{ pr.description }}</h3>
-        <h3>Course price: {{ pr.price }}</h3>
-        <h3>Course link: <a href="{{pr.link}}" style="text-decoration:none">Click</a></h3>
+        {% if pr.product_image %}
+        <img src="{{ pr.product_image.url}}" class="img-fluid mx-auto " alt="..."
+             style="border-radius:10px; width:100px; height:65px; margin:auto;">
+        {% else %}
+        <h2 class="text-center">
+            <svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" fill="currentColor"
+                 class="bi bi-image"
+                 viewBox="0 0 16 16">
+                <path d="M6.002 5.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0z"/>
+                <path d="M2.002 1a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V3a2 2 0 0 0-2-2h-12zm12 1a1 1 0 0 1 1 1v6.5l-3.777-1.947a.5.5 0 0 0-.577.093l-3.71 3.71-2.66-1.772a.5.5 0 0 0-.63.062L1.002 12V3a1 1 0 0 1 1-1h12z"/>
+            </svg>
+            Image Error
+        </h2>
+        {% endif %}
+        <h3>Course: {{ pr.product_name }}</h3>
+        <h3>Description:
+            <button class="btn btn-outline-light" type="button" data-bs-toggle="collapse"
+                    data-bs-target='#area{{ pr.id }}'
+                    aria-expanded="false" aria-controls="t{{ pr.id }}">
+                More info
+            </button>
+        </h3>
+        <div class="collapse" id='area{{ pr.id }}'>
+            <div class="">
+                <h5 id="descriptionhtml">{{ pr.description }}</h5>
+            </div>
+        </div>
+        <h3>Price: {{ pr.price }}$</h3>
+        <h3>Link: <a href="{{pr.link}}" style="text-decoration:none">Click</a></h3>
         <hr>
         {% endfor %}
 
-        <h3>Total price: {{ chek.total_price }}</h3>
+        <h3 class="text-center">Total price: {{ chek.total_price }}$</h3>
 
     </div>
     {% endif %}

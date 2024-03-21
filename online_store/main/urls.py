@@ -2,16 +2,13 @@ from django.urls import path
 from . import views
 from django.contrib.auth import views as auth_views
 from django.urls import path, include
+from django.conf import settings
+from django.conf.urls.static import static
 from .views import *
 
-# urlpatterns = [
-#     path('', views.products, name='products'),
-#     path('register/', views.register, name='register'),
-#     path('login/', auth_views.LoginView.as_view(template_name='main/login.html'), name='login'),
-#     path('logout/', auth_views.LogoutView.as_view(template_name='main/logout.html'), name='logout'),
-# ]
 urlpatterns = [
     path('', views.products, name='products'),
+    path('filter=<str:category>', views.filter_products, name='filter_products'),
     path("register/", register_view, name="register"),
     path("login/", login_view, name="login"),
     path("logout/", user_logout, name="logout"),
@@ -27,3 +24,6 @@ urlpatterns = [
     path('update_user/<int:user_id>/', update_user, name='update_user'),
     path('product_page/<int:pk>/', product_page, name='product_page'),
 ]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
