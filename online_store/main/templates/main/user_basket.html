@@ -10,14 +10,18 @@ Basket
     {% if basket == 'Your cart is empty' or not basket.products_id.all %}
     <br>
     <h2 class="text-center">Your cart is empty!</h2>
-    <h2 class="text-center"><a href="{% url 'products' %}" style="text-decoration:none">Go to Products</a></h2>
+        <h2 class="text-center"><a href="{% url 'products' %}" class="btn btn-outline-light d-grid gap-2 col-3 mx-auto"
+                                   style="text-decoration:none">Go to Products</a></h2>
     {% endif %}
     <div class="row row-cols-1 row-cols-md-3 g-4">
+
         {% for pr in basket.products_id.all %}
+
         <div class="col">
             <div class="users_shopping_cart">
                 {% if pr.product_image %}
-                <img src="{{ pr.product_image.url}}" class="img-fluid mx-auto d-block" alt="..." style="border-radius:10px; width:400px; height:250px; margin:auto;">
+                <img src="{{ pr.product_image.url}}" class="img-fluid mx-auto d-block" alt="..."
+                     style="border-radius:10px; width:400px; height:250px; margin:auto;">
                 {% else %}
                 <h2 class="text-center">
                     <svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" fill="currentColor"
@@ -58,6 +62,7 @@ Basket
     {% if basket.get_total_price != 0 %}
     <div class="text-center">
         <br>
+        <h3 class="text-center">Number of products: {{ basket.products_id.all|length }}</h3>
         <h3 class="text-center">Total price: {{ basket.get_total_price }} $</h3>
         <a href="{% url 'create_receipt' %}" class="btn btn-outline-light" style="font-size:30px">
             <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-wallet"

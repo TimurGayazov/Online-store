@@ -129,7 +129,6 @@ class UpdateProduct(UpdateView):
 
 
 def create_receipt(request):
-    # basket = Basket.objects.get(basket_id=request.user)[0]
     basket = Basket.objects.get(basket_id=request.user)
     tot_price = basket.get_total_price()
     user_receipt = Receipt.objects.get_or_create(user_username=request.user, date=time.ctime(), total_price=tot_price)[0]
@@ -149,7 +148,12 @@ def profile(request):
         receipts = Receipt.objects.all().order_by('-id')
         users = User.objects.all()
         user = User.objects.get(id=request.user.id)
-        data = {'user': user, 'users': users, 'receipts': receipts}
+        basket = Basket.objects.filter(basket_id=request.user).first()
+        if basket is None:
+            user_cart = Basket.objects.get_or_create(basket_id=request.user)
+            data = {'user': user, 'users': users, 'receipts': receipts, 'basket': basket}
+        else:
+            data = {'user': user, 'users': users, 'receipts': receipts, 'basket': basket}
         return render(request, 'main/profile.html', data)
     else:
         return redirect("login")
@@ -161,7 +165,7 @@ def add_to_basket(request, pk):
     basket = Basket.objects.get_or_create(basket_id=user)[0]
     basket.products_id.add(product)
     basket.save()
-    return redirect("products")
+    return redirect(request.META.get('HTTP_REFERER'))
 
 
 def remove_from_basket(request, pk):
@@ -170,7 +174,7 @@ def remove_from_basket(request, pk):
     basket = Basket.objects.get(basket_id=user)
     basket.products_id.remove(product)
     basket.save()
-    return redirect("basket")
+    return redirect(request.META.get('HTTP_REFERER'))
 
 
 def remove_from_basket_products(request, pk):
@@ -179,7 +183,7 @@ def remove_from_basket_products(request, pk):
     basket = Basket.objects.get(basket_id=user)
     basket.products_id.remove(product)
     basket.save()
-    return redirect("products")
+    return redirect(request.META.get('HTTP_REFERER'))
 
 
 def basket_view(request):
